@@ -1,0 +1,49 @@
+@startuml
+autonumber
+
+actor User
+boundary SearchBar
+control SearchController
+entity CarParkManager
+boundary MapUI
+boundary CarParkDetailsPopup
+control UserController
+boundary SavedCarParksUI
+control NavigationController
+boundary NavigationUI
+
+== User searches for a car park ==
+User -> SearchBar : Enter destination
+SearchBar -> SearchController : processSearchQuery()
+SearchController -> CarParkManager : fetchCarParkData()
+CarParkManager --> SearchController : returnCarParkList()
+SearchController --> SearchBar : showAutoCompleteSuggestions()
+SearchBar --> MapUI : displayMapPins()
+
+== User selects a car park ==
+User -> MapUI : Click on a car park pin
+MapUI -> CarParkDetailsPopup : showCarParkInfo()
+
+== User saves a car park ==
+User -> CarParkDetailsPopup : Click "Save" button"
+CarParkDetailsPopup -> UserController : saveCarPark()
+UserController -> SavedCarParksUI : updateSavedList()
+
+== User views saved car parks ==
+User -> SavedCarParksUI : View saved car parks
+SavedCarParksUI -> CarParkManager : fetchSavedCarParks()
+CarParkManager --> SavedCarParksUI : returnSavedCarParks()
+SavedCarParksUI --> User : displaySavedCarParks()
+
+== User starts navigation ==
+User -> SavedCarParksUI : Click on saved car park
+SavedCarParksUI -> NavigationController : startNavigation()
+NavigationController -> NavigationUI : calculateRoute()
+NavigationUI --> User : showRouteOnMap()
+
+== User follows navigation ==
+User -> NavigationUI : Follow route
+NavigationUI -> NavigationController : updateRoute()
+NavigationController --> NavigationUI : provideTurnByTurnNavigation()
+
+@enduml
